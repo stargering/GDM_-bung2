@@ -153,8 +153,19 @@ public class GRDM_U2 implements PlugIn {
 
             imp.updateAndDraw();
         }
+        private int lockColorValue(int value) {
+            return Math.max(0, Math.min(value, 255));
+        }
 
+        private double[] rgbToHsv(int r, int g, int b) {
+            float[] hsv = new float[3];
+            Color.RGBtoHSB(r, g, b, hsv);
+            return new double[]{hsv[0] * 360, hsv[1] * 100, hsv[2] * 100}; // Convert to degrees and percentage
+        }
 
+        private int hsvToRgb(double h, double s, double v) {
+            return Color.HSBtoRGB((float) (h / 360), (float) (s / 100), (float) (v / 100));
+        }
         private void changePixelValues(ImageProcessor ip) {
 
             // Array fuer den Zugriff auf die Pixelwerte
@@ -172,9 +183,29 @@ public class GRDM_U2 implements PlugIn {
 
                     // anstelle dieser drei Zeilen später hier die Farbtransformation durchführen,
                     // die Y Cb Cr -Werte verändern und dann wieder zurücktransformieren
-                    int rn = (int) (r + brightness);
-                    int gn = (int) (g + brightness);
-                    int bn = (int) (b + brightness);
+
+                    double[] hsv = rgbToHsv(r, g, b);
+                    int rgb = hsvToRgb(hsv[0], hsv[1], hsv[2]);
+                    //Adjust hue
+                    hsv[0] = (hsv[0] + hue) % 360;
+                    //Adjust Saturation
+                    hsv[1] = Math.max(0, Math.min(100, hsv[1] + saturation));
+
+                    int packedRgb = hsvToRgb(hsv[0], hsv[1], hsv[2]);
+                    r = (packedRgb >> 16) & 0xFF;
+                    g = (packedRgb >> 8) & 0xFF;
+                    b = packedRgb & 0xFF;
+
+
+
+
+
+                    int rn = lockColorValue(r + (int) brightness);
+                    int gn = lockColorValue(g + (int) brightness);
+                    int bn = lockColorValue(b + (int) brightness);
+                    //Makes sure that it doesnt overflow 255
+
+
 
                     // Hier muessen die neuen RGB-Werte wieder auf den Bereich von 0 bis 255 begrenzt werden
 
