@@ -134,9 +134,20 @@ public class GRDM_U2 implements PlugIn {
 
             if (slider == jSliderSaturation) {
                 int value = slider.getValue();
-                String str = "Saturation" + value;
+                String str = "Saturation" + saturation/10;
                 setSliderTitle(jSliderSaturation, str);
             }
+            if (slider == jSliderContrast) {
+                contrast = slider.getValue();
+                String str = "Contrast " + contrast/10;
+                setSliderTitle(jSliderContrast, str);
+            }
+            if (slider == jSliderHue) {
+                hue = slider.getValue();
+                String str = "Hue " + hue;
+                setSliderTitle(jSliderHue, str);
+            }
+
 
             changePixelValues(imp.getProcessor());
 
