@@ -208,7 +208,14 @@ public class GRDM_U2 implements PlugIn {
 
 
                     // Hier muessen die neuen RGB-Werte wieder auf den Bereich von 0 bis 255 begrenzt werden
+/*
+                    YCbCr ycbcr = null;
+                    //ycbcr = RGB.transformToYCbCr();
+                    ycbcr=ycbcr.changeBrightness(brightness);
+                    ycbcr=ycbcr.changeContrast(contrast/10);
+                    ycbcr=ycbcr.changeSaturation(saturation/10);
 
+*/
                     pixels[pos] = (0xFF<<24) | (rn<<16) | (gn<<8) | bn;
                 }
             }
